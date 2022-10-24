@@ -42,3 +42,19 @@ CREATE OR REPLACE TABLE `jardim-data.dw_github.users` AS
 SELECT * 
 FROM 
       `jardim-data.rel_github.users`
+
+------------------------------------------------------------------------------------------------------
+---------------- CREATING TABLE commits_by_date ------------------------------------------------------
+CREATE OR REPLACE TABLE `jardim-data.dw_github.commits_by_date`  
+PARTITION BY
+  DATE_TRUNC(date_id, MONTH)
+  CLUSTER BY repo_id
+AS
+SELECT       
+      DATE(created_at) AS date_id, 
+      author_id,
+      repo_id,
+      COUNT(1) AS commits_count
+FROM
+      `jardim-data.rel_github.commits`
+GROUP BY date_id, author_id, repo_id
